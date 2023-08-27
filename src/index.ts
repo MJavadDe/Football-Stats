@@ -1,30 +1,13 @@
-import fs from 'fs'
-import { CsvFileReader } from "./CsvFileReader";
-import { MatchDetails } from "./CsvFileReader";
 import { log } from "console";
+import { WinsAnalysis } from "./Analyzers/WinAnalysis";
+import { CsvFileReader } from "./CsvFileReader";
+import { MatchReader } from "./MatchReader";
+import { Summary } from "./Summary";
+import { ConsoleReport } from "./reportTarget/consoleReport";
+import { HtmlReport } from "./reportTarget/HtmlReport";
 
+const data = MatchReader.statciCsvReader("football.csv")
 
-class Analyse {
-  winPer: number = 0;
+data.load()
 
-  constructor(public team: string, public data: MatchDetails[]) { }
-  
-  get winRatio(): string{
-
-    let quan = 0;
-    this.data.map(stat => {
-      if (stat[1] === this.team && stat[5] === "H" ||stat[2] === this.team && stat[5] === "A" ) {
-        quan++;
-      }
-    })
-    
-    return `${this.team} has won ${Math.round((quan * 100) / 38) + "%"} of their games this season`
-    }
-
-} 
-
-
-
-  
-
-
+Summary.analysisWithHtml("Tottenham").buildAndPrintReport(data.matches)
